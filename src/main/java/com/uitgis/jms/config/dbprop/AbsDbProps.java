@@ -1,5 +1,7 @@
 package com.uitgis.jms.config.dbprop;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,4 +19,9 @@ public abstract class AbsDbProps {
 
 	protected String driverClassName;
 
+	protected String poolSize;
+
+	public int getPoolSizeValue() {
+		return NumberUtils.toInt(poolSize);
+	}
 }

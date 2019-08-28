@@ -24,7 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
 	private DepartmentRepository departmentRepo;
 
 	@Override
-	@Transactional(transactionManager = JtaConfig.BEAN_NAME_TRANSACTION_MANANGER)
+	@Transactional // (transactionManager = JtaConfig.BEAN_NAME_TRANSACTION_MANANGER)
 	public void transactionRollbackTest(int error) {
 		Employee employee = new Employee(RandomStringUtils.randomAlphabetic(10), new Date());
 		employeeRepo.save(employee);
@@ -33,8 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
 		departmentRepo.save(department);
 
 		if (error != 0) {
-			int a = 1 / 0;
-			System.out.println(a);
+			System.out.println(1 / 0);
 		}
 	}
 

@@ -4,6 +4,7 @@ import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -13,9 +14,28 @@ import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 
 @Configuration
+@ComponentScan
 @EnableTransactionManagement
 public class JtaConfig {
 	public static final String BEAN_NAME_TRANSACTION_MANANGER = "transactionManager";
+
+//	@Autowired
+//	private PropsComponent propsComponent;
+//
+//	@Bean
+//	public JpaVendorAdapter jpaVendorAdapter() {
+//		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+//		hibernateJpaVendorAdapter.setShowSql(true);
+//		hibernateJpaVendorAdapter.setGenerateDdl(true);
+//
+//		Profile activeProfile = propsComponent.getActiveProfile();
+//		if (activeProfile == Profile.MYSQL)
+//			hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);
+//		else
+//			hibernateJpaVendorAdapter.setDatabase(Database.POSTGRESQL);
+//
+//		return hibernateJpaVendorAdapter;
+//	}
 
 	private UserTransaction userTransaction() throws Throwable {
 		UserTransactionImp userTransactionImp = new UserTransactionImp();
@@ -33,8 +53,13 @@ public class JtaConfig {
 	public PlatformTransactionManager transactionManager() throws Throwable {
 		UserTransaction userTransaction = userTransaction();
 		AtomikosJtaPlatform.transaction = userTransaction;
+
 		TransactionManager atomikosTransactionManager = atomikosTransactionManager();
 		AtomikosJtaPlatform.transactionManager = atomikosTransactionManager;
-		return new JtaTransactionManager(userTransaction, atomikosTransactionManager);
+
+		JtaTransactionManager jtaTransactionManager = new JtaTransactionManager(userTransaction,
+				atomikosTransactionManager);
+		jtaTransactionManager.setAllowCustomIsolationLevels(true);
+		return jtaTransactionManager;
 	}
 }

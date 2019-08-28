@@ -16,7 +16,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
-import com.uitgis.jms.component.DataSourceComponent;
 import com.uitgis.jms.config.JtaConfig;
 import com.uitgis.jms.config.dbprop.Db1Props;
 
@@ -26,42 +25,33 @@ import com.uitgis.jms.config.dbprop.Db1Props;
 @EnableJpaRepositories(entityManagerFactoryRef = Db1Config.BEAN_NAME_DB1_ENTITY_MANAGER_FACTORY, transactionManagerRef = JtaConfig.BEAN_NAME_TRANSACTION_MANANGER, basePackages = "com.uitgis.jms.repository.db1")
 public class Db1Config extends AbsDbConfig {
 	public static final String BEAN_NAME_DB1_ENTITY_MANAGER_FACTORY = "db1EntityManagerFactory";
-//	public static final String BEAN_NAME_DB1_TRANSACTION_MANANGER = "db1TransactionManager";
 	private static final String BEAN_NAME_DB1_DATASOURCE = "db1DataSource";
-
-	/**
-	 * Cần viết trước jpaVendorAdapter nếu không sẽ bị null
-	 */
-	@Autowired
-	private DataSourceComponent dataSourceComponent;
 
 	@Autowired
 	private Db1Props db1Props;
 
+	/**
+	 * Cần khai báo sau cùng để tránh null
+	 */
 	@Autowired
 	private JpaVendorAdapter jpaVendorAdapter;
 
 	@Primary
 	@Bean(name = BEAN_NAME_DB1_DATASOURCE)
-	// @ConfigurationProperties(prefix = "db1.datasource")
 	public DataSource dataSource() {
-		// return DataSourceBuilder.create().build();
-
 		XADataSource xaDataSource = dataSourceComponent.getXADataSource(db1Props);
-
 		AtomikosDataSourceBean xaDb1DataSource = new AtomikosDataSourceBean();
 		xaDb1DataSource.setXaDataSource(xaDataSource);
 		xaDb1DataSource.setUniqueResourceName(BEAN_NAME_DB1_DATASOURCE);
+		xaDb1DataSource.setPoolSize(db1Props.getPoolSizeValue());
 		return xaDb1DataSource;
 	}
 
 	@Primary
 	@Bean(name = BEAN_NAME_DB1_ENTITY_MANAGER_FACTORY)
+	@DependsOn(JtaConfig.BEAN_NAME_TRANSACTION_MANANGER)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
 			@Qualifier(BEAN_NAME_DB1_DATASOURCE) DataSource dataSource) {
-		// return
-		// builder.dataSource(dataSource).packages("com.uitgis.jms.entity.db1").persistenceUnit("db1").build();
-
 		Map<String, Object> properties = createEntityManagerProps();
 
 		LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
@@ -73,10 +63,4 @@ public class Db1Config extends AbsDbConfig {
 		return entityManager;
 	}
 
-//	@Primary
-//	@Bean(name = BEAN_NAME_DB1_TRANSACTION_MANANGER)
-//	public PlatformTransactionManager transactionManager(
-//			@Qualifier(BEAN_NAME_DB1_ENTITY_MANAGER_FACTORY) EntityManagerFactory entityManagerFactory) {
-//		return new JpaTransactionManager(entityManagerFactory);
-//	}
 }
