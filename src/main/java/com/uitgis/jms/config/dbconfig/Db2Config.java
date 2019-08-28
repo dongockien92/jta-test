@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
@@ -28,12 +27,6 @@ public class Db2Config extends AbsDbConfig {
 
 	@Autowired
 	private Db2Props db2Props;
-
-	/**
-	 * Cần khai báo sau cùng để tránh null
-	 */
-	@Autowired
-	private JpaVendorAdapter jpaVendorAdapter;
 
 	@Bean(name = BEAN_NAME_DB2_DATASOURCE)
 	public DataSource dataSource() {

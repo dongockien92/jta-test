@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
@@ -20,7 +19,6 @@ import com.uitgis.jms.config.JtaConfig;
 import com.uitgis.jms.config.dbprop.Db1Props;
 
 @Configuration
-//@EnableTransactionManagement
 @DependsOn(JtaConfig.BEAN_NAME_TRANSACTION_MANANGER)
 @EnableJpaRepositories(entityManagerFactoryRef = Db1Config.BEAN_NAME_DB1_ENTITY_MANAGER_FACTORY, transactionManagerRef = JtaConfig.BEAN_NAME_TRANSACTION_MANANGER, basePackages = "com.uitgis.jms.repository.db1")
 public class Db1Config extends AbsDbConfig {
@@ -29,12 +27,6 @@ public class Db1Config extends AbsDbConfig {
 
 	@Autowired
 	private Db1Props db1Props;
-
-	/**
-	 * Cần khai báo sau cùng để tránh null
-	 */
-	@Autowired
-	private JpaVendorAdapter jpaVendorAdapter;
 
 	@Primary
 	@Bean(name = BEAN_NAME_DB1_DATASOURCE)

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.uitgis.jms.config.JtaConfig;
 import com.uitgis.jms.entity.db1.Employee;
 import com.uitgis.jms.entity.db2.Department;
 import com.uitgis.jms.repository.db1.EmployeeRepository;
@@ -24,7 +23,7 @@ public class CompanyServiceImpl implements CompanyService {
 	private DepartmentRepository departmentRepo;
 
 	@Override
-	@Transactional // (transactionManager = JtaConfig.BEAN_NAME_TRANSACTION_MANANGER)
+	@Transactional
 	public void transactionRollbackTest(int error) {
 		Employee employee = new Employee(RandomStringUtils.randomAlphabetic(10), new Date());
 		employeeRepo.save(employee);

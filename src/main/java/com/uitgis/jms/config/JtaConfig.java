@@ -6,6 +6,8 @@ import javax.transaction.UserTransaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -19,23 +21,13 @@ import com.atomikos.icatch.jta.UserTransactionManager;
 public class JtaConfig {
 	public static final String BEAN_NAME_TRANSACTION_MANANGER = "transactionManager";
 
-//	@Autowired
-//	private PropsComponent propsComponent;
-//
-//	@Bean
-//	public JpaVendorAdapter jpaVendorAdapter() {
-//		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
-//		hibernateJpaVendorAdapter.setShowSql(true);
-//		hibernateJpaVendorAdapter.setGenerateDdl(true);
-//
-//		Profile activeProfile = propsComponent.getActiveProfile();
-//		if (activeProfile == Profile.MYSQL)
-//			hibernateJpaVendorAdapter.setDatabase(Database.MYSQL);
-//		else
-//			hibernateJpaVendorAdapter.setDatabase(Database.POSTGRESQL);
-//
-//		return hibernateJpaVendorAdapter;
-//	}
+	@Bean
+	public JpaVendorAdapter jpaVendorAdapter() {
+		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+		hibernateJpaVendorAdapter.setShowSql(true);
+		hibernateJpaVendorAdapter.setGenerateDdl(true);
+		return hibernateJpaVendorAdapter;
+	}
 
 	private UserTransaction userTransaction() throws Throwable {
 		UserTransactionImp userTransactionImp = new UserTransactionImp();
